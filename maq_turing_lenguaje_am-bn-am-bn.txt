@@ -1,0 +1,138 @@
+class tupla_transicion:
+    def __init__(self, _estado, _caracter , _direccion):
+        self.estado = _estado
+        self.caracter = _caracter
+        self.direccion = _direccion
+
+class turing_machine:
+    def __init__(self, transicion, string_cinta):
+        if isinstance(transicion, dict):
+            self.tabla_transicion = transicion
+        self.cinta = list(string_cinta)
+        self.current_state = 's'
+        self.current_position = 0
+    def strart(self):
+        result = False
+        if self.current_state == 's':
+            while (self.current_state!= 'Alto' and self.current_state!= 'Si' and self.current_state!= 'No' and self.current_state !='Error'):
+                car = self.cinta[self.current_position]
+                tupla = "('" + self.current_state + "', '" + car + "')"
+                if  tupla in self.tabla_transicion:
+                    accion = self.tabla_transicion[tupla]
+                    if isinstance(accion, tupla_transicion):
+                        self.current_state = accion.estado
+                        print(self.cinta[self.current_position], accion.caracter, accion.direccion, accion.estado)
+                        self.cinta[self.current_position] = accion.caracter
+                        if accion.direccion == 'l':
+                            self.current_position = self.current_position - 1
+                        else:
+                            if accion.direccion == 'r':
+                                self.current_position = self.current_position + 1
+                            else:
+                                if accion.direccion != 'o':
+                                    #salida si hay error
+                                    self.current_state = 'Error'
+
+        if self.current_state!= 'Alto' or self.current_state!= 'Si' or  self.current_state!= 'No':
+            result = True
+        return result
+
+
+# Lenguaje {a^nb^4n | n>=0}\n",
+MT = dict()
+#     "# INICIO
+MT["('s', '@')"] = tupla_transicion('q0', '@', 'r')
+#     "# Contar todas las a's
+MT["('q0', 'a')"] = tupla_transicion('q1', 'c', 'r')
+MT["('q1', 'a')"] = tupla_transicion('q1', 'a', 'r')
+MT["('q1', 'b')"] = tupla_transicion('q2', 'b', 'r')
+MT["('q2', 'b')"] = tupla_transicion('q2', 'b', 'r')
+MT["('q2', 'a')"] = tupla_transicion('q3', 'e', 'l')
+MT["('q2', 'e')"] = tupla_transicion('q22', 'e', 'r')
+MT["('q22', 'e')"] = tupla_transicion('q22', 'e', 'r')
+MT["('q22', 'a')"] = tupla_transicion('q3', 'e', 'l')
+MT["('q22', 'b')"] = tupla_transicion('q23', 'b', 'l')
+MT["('q23', 'e')"] = tupla_transicion('q23', 'e', 'l')
+MT["('q23', 'b')"] = tupla_transicion('q23', 'b', 'l')
+MT["('q3', 'e')"] = tupla_transicion('q3', 'e', 'l')
+MT["('q3', 'b')"] = tupla_transicion('q3', 'b', 'l')
+MT["('q3', 'a')"] = tupla_transicion('q3', 'a', 'l')
+MT["('q3', 'c')"] = tupla_transicion('q4', 'c', 'r')
+MT["('q4', 'a')"] = tupla_transicion('q1', 'c', 'r')
+MT["('q4', 'b')"] = tupla_transicion('q5', 'b', 'r')
+MT["('q5', 'b')"] = tupla_transicion('q5', 'b', 'r')
+MT["('q5', 'e')"] = tupla_transicion('q6', 'e', 'r')
+MT["('q6', 'e')"] = tupla_transicion('q6', 'e', 'r')
+
+#     "# Contar todas las b's
+MT["('q6', 'b')"] = tupla_transicion('q7', 'b', 'l')
+MT["('q7', 'e')"] = tupla_transicion('q7', 'e', 'l')
+MT["('q7', 'b')"] = tupla_transicion('q7', 'b', 'l')
+MT["('q7', 'c')"] = tupla_transicion('q8', 'c', 'r')
+MT["('q8', 'b')"] = tupla_transicion('q9', 'd', 'r')
+MT["('q9', 'b')"] = tupla_transicion('q9', 'b', 'r')
+MT["('q9', 'e')"] = tupla_transicion('q10', 'e', 'r')
+MT["('q10', 'e')"] = tupla_transicion('q10', 'e', 'r')
+MT["('q10', 'b')"] = tupla_transicion('q11', 'f', 'l')
+MT["('q10', 'f')"] = tupla_transicion('q10', 'f', 'r')
+MT["('q11', 'f')"] = tupla_transicion('q11', 'f', 'l')
+MT["('q11', 'e')"] = tupla_transicion('q11', 'e', 'l')
+MT["('q11', 'b')"] = tupla_transicion('q11', 'b', 'l')
+MT["('q11', 'd')"] = tupla_transicion('q12', 'd', 'r')
+MT["('q12', 'b')"] = tupla_transicion('q9', 'd', 'r')
+MT["('q12', 'e')"] = tupla_transicion('q13', 'e', 'r')
+MT["('q13', 'e')"] = tupla_transicion('q13', 'e', 'r')
+MT["('q13', 'f')"] = tupla_transicion('q14', 'f', 'r')
+MT["('q14', 'f')"] = tupla_transicion('q14', 'f', 'r')
+
+#     "# Irnos al inicio de la cinta
+MT["('q14', '@')"] = tupla_transicion('q15', '@', 'l')
+MT["('q15', 'f')"] = tupla_transicion('q15', 'f', 'l')
+MT["('q15', 'e')"] = tupla_transicion('q15', 'e', 'l')
+MT["('q15', 'd')"] = tupla_transicion('q15', 'd', 'l')
+MT["('q15', 'c')"] = tupla_transicion('q15', 'c', 'l')
+MT["('q15', '@')"] = tupla_transicion('q16', '@', 'r')
+
+#     "# m > n
+MT["('q16', 'c')"] = tupla_transicion('q17', 'A', 'r')
+MT["('q17', 'c')"] = tupla_transicion('q17', 'c', 'r')
+MT["('q17', 'd')"] = tupla_transicion('q18', 'B', 'l')
+MT["('q17', 'B')"] = tupla_transicion('q20', 'B', 'r')
+MT["('q18', 'B')"] = tupla_transicion('q18', 'B', 'l')
+MT["('q18', 'c')"] = tupla_transicion('q18', 'c', 'l')
+MT["('q18', 'A')"] = tupla_transicion('q19', 'A', 'r')
+MT["('q19', 'c')"] = tupla_transicion('q17', 'A', 'r')
+MT["('q19', 'B')"] = tupla_transicion('q19', 'B', 'r')
+MT["('q20', 'B')"] = tupla_transicion('q20', 'B', 'r')
+MT["('q20', 'd')"] = tupla_transicion('q21', 'B', 'l')
+MT["('q21', 'B')"] = tupla_transicion('q21', 'B', 'l')
+MT["('q21', 'c')"] = tupla_transicion('q18', 'c', 'l')
+
+#     "# Condición de aceptación
+MT["('q17', 'e')"] = tupla_transicion('Si', 'e', 'r')
+MT["('q19', 'e')"] = tupla_transicion('Si', 'e', 'r')
+MT["('q20', 'e')"] = tupla_transicion('Si', 'e', 'r')
+MT["('q21', 'e')"] = tupla_transicion('Si', 'e', 'r')
+
+#     "# Condiciones de no aceptación\n",
+MT["('q0', '@')"] = tupla_transicion('No', '@', 'r')
+MT["('q0', 'b')"] = tupla_transicion('No', 'b', 'r')
+MT["('q1', '@')"] = tupla_transicion('No', '@', 'r')
+MT["('q2', '@')"] = tupla_transicion('No', '@', 'r')
+MT["('q6', 'a')"] = tupla_transicion('No', 'a', 'r')
+MT["('q6', '@')"] = tupla_transicion('No', '@', 'r')
+MT["('q10', '@')"] = tupla_transicion('No', '@', 'r')
+MT["('q14', 'b')"] = tupla_transicion('No', 'b', 'r')
+MT["('q14', 'a')"] = tupla_transicion('No', 'a', 'r')
+MT["('q19', 'd')"] = tupla_transicion('No', 'd', 'r')
+MT["('q21', 'A')"] = tupla_transicion('No', 'A', 'r')
+MT["('q23', 'a')"] = tupla_transicion('No', 'b', 'l')
+MT["('q23', 'c')"] = tupla_transicion('No', 'c', 'r')
+
+
+#     "stri = '@abbbb@
+stri = '@aaaabbaaaabb@'
+tm = turing_machine(MT,stri)
+result = tm.strart()
+print(result)
+print(tm.current_state, tm.current_position)
